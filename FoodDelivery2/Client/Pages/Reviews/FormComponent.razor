@@ -1,0 +1,38 @@
+﻿@*@inject HttpClient _client
+
+<h3>FormComponent</h3>
+
+<EditForm Model="@vehicle" OnValidSubmit="@OnValidSubmit">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label>Name: </label>
+		<div>
+			<InputText @bind-Value="vehicle.Name" class="form-control" />
+			<ValidationMessage For="@(()=> vehicle.Name)" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">
+		@ButtonText
+	</button>
+</EditForm>
+
+@code {
+	[Parameter] public Colour? vehicle { get; set; }
+	[Parameter] public string ButtonText { get; set; } = "Save";
+	[Parameter] public EventCallback OnValidSubmit { get; set; }
+
+	private IList<Make>? Makes;
+	private IList<Model>? Models;
+	private IList<Colour>? Colours;
+
+	protected async override Task OnInitializedAsync()
+	{
+		Makes = await _client.GetFromJsonAsync<List<Make>>($"{Endpoints.MakesEndpoint}");
+		Models = await _client.GetFromJsonAsync<List<Model>>($"{Endpoints.ModelsEndpoint}");
+		Colours = await _client.GetFromJsonAsync<List<Colour>>($"{Endpoints.ColoursEndpoint}");
+	}
+
+}
+*@
+ 

@@ -1,0 +1,48 @@
+﻿@page "/promocodes/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New PromoCode</h3>
+<hr />
+<br />
+
+<EditForm Model="@promocode" OnValidSubmit="CreatePromoCode">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label>PromoCode: </label>
+		<div>
+			<InputText @bind-Value="promocode.PromoName" class="form-control" />
+			<ValidationMessage For="@(()=> promocode.PromoName)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Amount: </label>
+		<div>
+			<InputNumber @bind-Value="promocode.Amount" class="form-control" />
+			<ValidationMessage For="@(()=> promocode.Amount)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Expiry Date: </label>
+		<div>
+			<InputDate @bind-Value="@promocode.PCExpiryDate" class="form-control" />
+			<ValidationMessage For="@(()=> promocode.PCExpiryDate)" />
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-success btn-block">
+		Create PromoCode
+	</button>
+</EditForm>
+
+@code {
+	PromoCode promocode = new PromoCode();
+
+	private async Task CreatePromoCode()
+	{
+		await _client.PostAsJsonAsync(Endpoints.PromoCodesEndpoint, promocode);
+		_navManager.NavigateTo("/promocodes/");
+	}
+
+}

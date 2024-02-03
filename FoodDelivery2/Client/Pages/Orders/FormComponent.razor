@@ -1,0 +1,141 @@
+﻿@inject HttpClient _client
+@using FoodDelivery2.Client.Components
+
+<EditForm Model="@order" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+
+        <div class="form-group">
+            <label>Order ID: </label>
+            <div>
+                <InputNumber @bind-Value="order.Id" class="form-control" />
+                <ValidationMessage For="@(()=> order.Id)" />
+            </div>
+        </div>
+
+		<div class="form-group">
+			<label>Name: </label>
+			<div>
+				<InputSelect @bind-Value="order.CustomerId" class="form-control">
+					<option value="">-- Select Customer --</option>
+					@if (Customers != null)
+					{
+						foreach (var customer in Customers)
+						{
+							<option value="@customer.Id">@customer.CustName</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> order.CustomerId)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Food Item 1: </label>
+			<div>
+				<InputSelect @bind-Value="order.FoodOrderId1" class="form-control">
+					<option value="">-- FoodItem --</option>
+					@if (FoodOrders1 != null)
+					{
+						foreach (var foodorder in FoodOrders1)
+						{
+							<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> order.FoodOrderId1)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Food Item 2: </label>
+			<div>
+				<InputSelect @bind-Value="order.FoodOrderId2" class="form-control">
+					<option value="">-- FoodItem --</option>
+					@if (FoodOrders2 != null)
+					{
+						foreach (var foodorder in FoodOrders2)
+						{
+							<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> order.FoodOrderId2)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Food Item 3: </label>
+			<div>
+				<InputSelect @bind-Value="order.FoodOrderId3" class="form-control">
+					<option value="">-- FoodItem --</option>
+					@if (FoodOrders3 != null)
+					{
+						foreach (var foodorder in FoodOrders3)
+						{
+							<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> order.FoodOrderId3)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Driver: </label>
+			<div>
+				<InputSelect @bind-Value="order.DriverId" class="form-control">
+					<option value="">-- Driver --</option>
+					@if (Drivers != null)
+					{
+						foreach (var driver in Drivers)
+						{
+							<option value="@driver.Id">@driver.DriverName</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> order.DriverId)" />
+			</div>
+		</div>
+		<BackToList Target="orders" />
+    </fieldset>
+
+
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+
+    }
+	
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Order? order { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Customer>? Customers;
+    private IList<FoodOrder>? FoodOrders;
+    private IList<Driver>? Drivers;
+    private IList<Review>? Reviews;
+	private IList<Food>? Foods;
+	private IList<FoodOrder>? FoodOrders1;
+	private IList<FoodOrder>? FoodOrders2;
+	private IList<FoodOrder>? FoodOrders3;
+	
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
+        FoodOrders = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+        Drivers = await _client.GetFromJsonAsync<List<Driver>>($"{Endpoints.DriversEndpoint}");
+        Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+		Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+		FoodOrders1 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		FoodOrders2 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		FoodOrders3 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+    }
+
+}

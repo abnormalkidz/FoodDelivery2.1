@@ -1,0 +1,89 @@
+﻿@page "/promocodes/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+<h3 class="card-title">PromoCodes</h3>
+<a href="/promocodes/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New PromoCode
+</a>
+<br />
+<br />
+@if (PromoCodes == null)
+{
+	<div class="alert alert-info">Loading promocodes...</div>
+}
+else
+{
+	<table class="table table-responsive" id="promocodesTable">
+		<thead>
+			<tr>
+				<th>PromoCode</th>
+				<th>Amount</th>
+				<th>Expiry Date</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var promocode in PromoCodes)
+			{
+				<tr>
+					<td>@promocode.PromoName</td>
+					<td>$@promocode.Amount</td>
+					<td>@promocode.PCExpiryDate.Date.ToString("dd MMMM yyyy HH:mm")</td>
+					<td>
+						<a href="/promocodes/view/@promocode.Id" class="btn btn-primary">
+							<span class="oi oi-book"></span>
+						</a>
+						<a href="/promocodes/edit/@promocode.Id" class="btn btn-warning">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<button class="btn btn-danger" @onclick="@(()=>Delete(promocode.Id))">
+							<span class="oi oi-delete"></span>
+						</button>
+					</td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<PromoCode>? PromoCodes;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		PromoCodes = await _client.GetFromJsonAsync<List<PromoCode>>($"{Endpoints.PromoCodesEndpoint}");
+	}
+
+	async Task Delete(int promocodeID)
+	{
+		if (PromoCodes != null)
+		{
+			var promocode = PromoCodes.First(q => q.Id == promocodeID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {promocode.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.PromoCodesEndpoint}/{promocodeID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#promocodesTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#promocodesTable");
+	}
+
+}

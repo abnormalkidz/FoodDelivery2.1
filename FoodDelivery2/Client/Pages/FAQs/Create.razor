@@ -1,0 +1,39 @@
+﻿@page "/faqs/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New FAQ</h3>
+<hr />
+<br />
+
+<EditForm Model="@faq" OnValidSubmit="CreateFAQ">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label>Questions: </label>
+		<div>
+			<InputText @bind-Value="faq.Qns" class="form-control" />
+			<ValidationMessage For="@(()=> faq.Qns)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Answers: </label>
+		<div>
+			<InputText @bind-Value="faq.Ans" class="form-control" />
+			<ValidationMessage For="@(()=> faq.Ans)" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">
+		Create FAQ
+	</button>
+</EditForm>
+
+@code {
+	FAQ faq = new FAQ();
+	private async Task CreateFAQ()
+	{
+		await _client.PostAsJsonAsync(Endpoints.FAQsEndpoint, faq);
+		_navManager.NavigateTo("/faqs/");
+	}
+
+}

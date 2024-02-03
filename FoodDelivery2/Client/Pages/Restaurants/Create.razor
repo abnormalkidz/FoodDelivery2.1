@@ -1,0 +1,58 @@
+﻿@page "/restaurants/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New Restaurant</h3>
+<hr />
+<br />
+
+<EditForm Model="@restaurant" OnValidSubmit="CreateRestaurant">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label> Photo:</label>
+		<div>
+			<img src="@restaurant.RestaurantPhoto" style="width: 250px; height: 250px;"> <br /> <br />
+			<InputFile OnChange="@OnInputFileChanged"></InputFile>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>Restaurant Name: </label>
+		<div>
+			<InputText @bind-Value="restaurant.RestoName" class="form-control" />
+			<ValidationMessage For="@(()=> restaurant.RestoName)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Address: </label>
+		<div>
+			<InputText @bind-Value="restaurant.Location" class="form-control" />
+			<ValidationMessage For="@(()=> restaurant.Location)" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">
+		Create Restaurant
+	</button>
+</EditForm>
+
+@code {
+	Restaurant restaurant = new Restaurant();
+
+	private async Task CreateRestaurant()
+	{
+		await _client.PostAsJsonAsync(Endpoints.RestaurantsEndpoint, restaurant);
+		_navManager.NavigateTo("/restaurants/");
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+	{
+		var file = inputFileChangeEvent.File;
+
+		var buffer = new byte[file.Size];
+		await file.OpenReadStream().ReadAsync(buffer);
+
+		restaurant.RestaurantPhoto = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+	}
+
+}

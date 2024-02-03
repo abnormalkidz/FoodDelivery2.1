@@ -1,0 +1,61 @@
+﻿@page "/reviews/selectorderreview/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Review Orders</h3>
+
+@if (Orders == null)
+{
+    <div class="alert alert-info">Loading Orders...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+
+                <th>Order</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Orders)
+            {
+                <tr>
+                    <td>@order.FoodOrder1.Food.FoodItem</td>
+                    <td>@order.FoodOrder2.Food.FoodItem</td>
+                    <td>@order.FoodOrder3.Food.FoodItem</td>
+                    <td>
+                        <a href=" /reviews/createOrderReview/@order.Id" class=" btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+@*<button type="submit" class=" btn btn-success btn-block">
+        Next
+    </button>*@
+
+@code {
+    Review review = new Review();
+
+
+    private IList<FoodOrder>? FoodOrders;
+    private IList<Order>? Orders;
+    private DateTime _displaydate;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        FoodOrders = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+        Orders = await _client.GetFromJsonAsync<List<Order>>($"{Endpoints.OrdersEndpoint}");
+        _displaydate = DateTime.Now;
+    }
+
+
+
+}

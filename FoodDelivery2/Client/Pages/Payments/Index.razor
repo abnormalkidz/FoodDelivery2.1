@@ -1,0 +1,106 @@
+﻿@page "/payments/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+<h3 class="card-title">Payments</h3>
+<a href="/payments/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Payment
+</a>
+<br />
+<br />
+@if (Payments == null)
+{
+	<div class="alert alert-info">Loading payments...</div>
+}
+else
+{
+	<table class="table table-responsive" id="paymentsTable">
+		<thead>
+			<tr>
+				<th>Order</th>
+				<th>Name on Credit Card</th>
+				<th>Credit Card No.</th>
+				<th>Bank</th>
+				<th>CVC</th>
+				<th>Expiry Date</th>
+				<th>Total Price</th>
+				<th>Delivery Fee</th>
+				<th>PromoCode Name</th>
+				<th>Discount</th>
+				<th>Final Price</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var payment in Payments)
+			{
+				<tr>
+					<td>@payment.Order.Customer.CustName</td>
+					<td>@payment.CreditName</td>
+					<td>@payment.CreditCardNo</td>
+					<td>@payment.Bank</td>
+					<td>@payment.Cvc</td>
+					<td>@payment.CardExpiryDate</td>
+					<td>$@payment.Order.TotalPrice</td>
+					<td>$@payment.DeliveryFee</td>
+					<td>@payment.PromoCode.PromoName</td>
+					<td>$@payment.PromoCode.Amount</td>
+					<td>$@payment.FinalPrice</td>
+
+					<td>
+						<a href="/payments/view/@payment.Id" class="btn btn-primary">
+							<span class="oi oi-book"></span>
+						</a>
+						<a href="/payments/edit/@payment.Id" class="btn btn-warning">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<button class="btn btn-danger" @onclick="@(()=>Delete(payment.Id))">
+							<span class="oi oi-delete"></span>
+						</button>
+					</td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<Payment>? Payments;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
+	}
+
+	async Task Delete(int paymentID)
+	{
+		if (Payments != null)
+		{
+			var payment = Payments.First(q => q.Id == paymentID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {payment.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.PaymentsEndpoint}/{paymentID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#paymentsTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#paymentsTable");
+	}
+
+}

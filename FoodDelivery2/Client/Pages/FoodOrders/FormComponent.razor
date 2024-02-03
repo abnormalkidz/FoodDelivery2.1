@@ -1,0 +1,71 @@
+﻿@inject HttpClient _client
+@using FoodDelivery2.Client.Components
+
+<EditForm Model="@foodorder" OnValidSubmit="@OnValidSubmit">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+     <fieldset disabled="@Disabled">
+    <div class="form-group">
+        <label>Food Item: </label>
+        <div>
+            <InputSelect @bind-Value="foodorder.FoodId" class="form-control">
+                <option value="">-- Select food item --</option>
+                @if (Foods != null)
+                {
+                    foreach (var food in Foods)
+                    {
+                        @if (@food.Id == 1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            <option value="@food.Id">@food.FoodItem</option>
+                        }
+
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(()=> foodorder.FoodId)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Quantity: </label>
+        <div>
+            <InputNumber @bind-Value="foodorder.Qty" class="form-control" />
+            <ValidationMessage For="@(()=> foodorder.Qty)" />
+        </div>
+    </div>
+        <BackToList Target="foodorders" />
+    </fieldset>
+
+    @if (!Disabled)
+    {
+
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+
+    }
+
+    
+</EditForm>
+	
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public FoodOrder? foodorder { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Food>? Foods;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+
+    }
+
+}
+
+ 

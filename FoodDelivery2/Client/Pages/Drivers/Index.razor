@@ -1,0 +1,101 @@
+﻿@page "/drivers/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable 
+
+
+<h3 class="card-title">Drivers</h3>
+<a href="/drivers/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Driver
+</a>
+<br />
+<br />
+@if (Drivers == null)
+{
+    <div class="alert alert-info">Loading drivers...</div>
+}
+else
+{
+    <table class="table table-responsive" id="driversTable">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Mode Of Transport</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Order Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driver in Drivers)
+            {
+                <tr>
+                    <td><img src="@driver.DriverPhoto" alt="" style="width: 200px; height: 150px;" /></td>
+                    <td>@driver.DriverName</td>
+                    <td>@driver.ModeOfTransport</td>
+                    <td>@driver.DriverEmail</td>
+                    <td>@driver.DriverPhoneNo</td>
+                    <td>@driver.OrderStatus</td>
+
+                    <td>
+                        <a href="/drivers/review/@driver.Id" class="btn btn-primary">
+                            <span class="oi oi-star" Review></span>
+                        </a>
+                        <a href="/drivers/review/@driver.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/drivers/edit/@driver.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(driver.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+
+@code {
+    private List<Driver>? Drivers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Drivers = await _client.GetFromJsonAsync<List<Driver>>($"{Endpoints.DriversEndpoint}");
+    }
+
+    async Task Delete(int driverID)
+    {
+        if (Drivers != null)
+        {
+            var driver = Drivers.First(q => q.Id == driverID);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {driver.Id}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.DriversEndpoint}/{driverID}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#driversTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#driversTable");
+    }
+
+}

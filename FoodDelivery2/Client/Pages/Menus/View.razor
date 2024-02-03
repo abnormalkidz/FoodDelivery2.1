@@ -1,0 +1,18 @@
+﻿@page "/menus/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">View Menu</h3>
+
+<FormComponent menu="menu" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Menu menu = new Menu();
+
+    private async Task CreateMenu()
+    {
+        await _client.PostAsJsonAsync(Endpoints.MenusEndpoint, menu);
+        _navManager.NavigateTo("/menus/");
+    }
+}

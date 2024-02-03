@@ -1,0 +1,120 @@
+﻿@inject HttpClient _client
+@using FoodDelivery2.Client.Components
+
+<EditForm Model="@payment" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+
+        <div class="form-group">
+            <label>Payment: </label>
+            <div>
+                <InputNumber @bind-Value="payment.Id" class="form-control" />
+                <ValidationMessage For="@(()=> payment.Id)" />
+            </div>
+        </div>
+
+		<div class="form-group">
+			<label>Order made by customer: </label>
+			<div>
+				<InputSelect @bind-Value="payment.OrderId" class="form-control">
+					<option value="">-- Select Customer--</option>
+					@if (Orders != null)
+					{
+						foreach (var order in Orders)
+						{
+							<option value="@order.Id">@order.Customer.CustName</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> payment.OrderId)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Name on Credit Card: </label>
+			<div>
+				<InputText @bind-Value="payment.CreditName" class="form-control" />
+				<ValidationMessage For="@(()=> payment.CreditName)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Credit Card No: </label>
+			<div>
+				<InputText @bind-Value="payment.CreditCardNo" class="form-control" />
+				<ValidationMessage For="@(()=> payment.CreditCardNo)" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label>Bank: </label>
+			<div>
+				<InputText @bind-Value="payment.Bank" class="form-control" />
+				<ValidationMessage For="@(()=> payment.Bank)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>CVC: </label>
+			<div>
+				<InputText @bind-Value="payment.Cvc" class="form-control" />
+				<ValidationMessage For="@(()=> payment.Cvc)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Expiry Date: </label>
+			<div>
+				<InputText @bind-Value="payment.CardExpiryDate" class="form-control" />
+				<ValidationMessage For="@(()=> payment.CardExpiryDate)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>PromoCode Name: </label>
+			<div>
+				<InputSelect @bind-Value="payment.PromoCodeId" class="form-control">
+					<option value="">-- Select PromoCode --</option>
+					@if (PromoCodes != null)
+					{
+						foreach (var promocode in PromoCodes)
+						{
+							<option value="@promocode.Id">@promocode.PromoName</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="@(()=> payment.PromoCodeId)" />
+			</div>
+		</div>
+		<BackToList Target="payments" />
+    </fieldset>
+
+
+    @if (!Disabled)
+    {
+
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+
+    }
+
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Payment? payment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+	private IList<Order>? Orders;
+	private IList<Food>? Foods;
+	private IList<FoodOrder>? FoodOrders;
+	private IList<PromoCode>? PromoCodes;
+
+    protected async override Task OnInitializedAsync()
+    {
+		Orders = await _client.GetFromJsonAsync<List<Order>>($"{Endpoints.OrdersEndpoint}");
+		Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+		FoodOrders = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		PromoCodes = await _client.GetFromJsonAsync<List<PromoCode>>($"{Endpoints.PromoCodesEndpoint}");
+    }
+
+}

@@ -1,0 +1,23 @@
+﻿@page "/promocodes/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit PromoCode</h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditPromoCode" promocode="promocode" />
+
+@code {
+	[Parameter] public int id { get; set; }
+	PromoCode? promocode = new PromoCode();
+
+	protected async override Task OnParametersSetAsync()
+	{
+		promocode = await
+		_client.GetFromJsonAsync<PromoCode>($"{Endpoints.PromoCodesEndpoint}/{id}");
+	}
+	async Task EditPromoCode()
+	{
+		await _client.PutAsJsonAsync($"{Endpoints.PromoCodesEndpoint}/{id}",
+		promocode);
+		_navManager.NavigateTo("/promocodes/");
+	}
+}

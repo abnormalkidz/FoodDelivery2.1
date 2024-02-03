@@ -1,0 +1,56 @@
+﻿@page "/reviews/selectdriverreview/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Review Drivers</h3>
+
+@if (Drivers == null)
+{
+    <div class="alert alert-info">Loading Drivers...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Driver</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driver in Drivers)
+            {
+                <tr>
+                    <td>@driver.DriverName</td>
+                    <td>
+                        <a href=" /reviews/createDriverReview/@driver.Id" class=" btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+@*<button type="submit" class=" btn btn-success btn-block">
+        Next
+    </button>*@
+
+@code {
+    Review review = new Review();
+
+    
+    private IList<Driver>? Drivers;
+    private DateTime _displaydate;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        Drivers = await _client.GetFromJsonAsync<List<Driver>>($"{Endpoints.DriversEndpoint}");
+        _displaydate = DateTime.Now;
+    }
+
+
+
+}

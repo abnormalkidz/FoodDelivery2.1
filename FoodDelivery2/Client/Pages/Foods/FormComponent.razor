@@ -1,0 +1,91 @@
+﻿@inject HttpClient _client
+@using FoodDelivery2.Client.Components
+
+<EditForm Model="@food" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+
+        <div class="form-group">
+            <label>Food: </label>
+            <div>
+                <InputText @bind-Value="food.FoodItem" class="form-control" />
+                <ValidationMessage For="@(()=> food.FoodItem)" />
+            </div>
+        </div>
+
+		<div class="form-group">
+			<label>Size: </label>
+			<div>
+				<InputText @bind-Value="food.Size" class="form-control" />
+				<ValidationMessage For="@(()=> food.Size)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Price: </label>
+			<div>
+				<InputNumber @bind-Value="food.Price" class="form-control" />
+				<ValidationMessage For="@(()=> food.Price)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Halal: </label>
+			<div>
+				<InputCheckbox @bind-Value="food.Halal" class="form-control" />
+				<ValidationMessage For="@(()=> food.Halal)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Total Calories: </label>
+			<div>
+				<InputNumber @bind-Value="food.Calories" class="form-control" />
+				<ValidationMessage For="@(()=> food.Calories)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Total Protein: </label>
+			<div>
+				<InputNumber @bind-Value="food.Protein" class="form-control" />
+				<ValidationMessage For="@(()=> food.Protein)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Total Fats: </label>
+			<div>
+				<InputNumber @bind-Value="food.Fats" class="form-control" />
+				<ValidationMessage For="@(()=> food.Fats)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Allergies: </label>
+			<div>
+				<InputText @bind-Value="food.Allergies" class="form-control" />
+				<ValidationMessage For="@(()=> food.Allergies)" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Remarks: </label>
+			<div>
+				<InputText @bind-Value="food.Remarks" class="form-control" />
+				<ValidationMessage For="@(()=> food.Remarks)" />
+			</div>
+		</div>
+		<BackToList Target="foods" />
+    </fieldset>
+
+	@if (!Disabled)
+	{
+		<button type="submit" class="btn btn-success btn-block">
+			@ButtonText
+		</button>
+	}
+</EditForm>
+
+@code {
+
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Food? food { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

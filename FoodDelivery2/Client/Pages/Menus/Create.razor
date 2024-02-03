@@ -1,0 +1,75 @@
+﻿@page "/menus/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New Menu</h3>
+<hr />
+<br />
+
+<EditForm Model="@menu" OnValidSubmit="CreateMenu">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+
+	<div class="form-group">
+
+		<label> Photo:</label>
+
+		<div>
+
+			<img src="@menu.CuisinePhoto" style="width: 250px; height: 250px;"> <br /> <br />
+
+			<InputFile OnChange="@OnInputFileChanged"></InputFile>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>Cuisine: </label>
+		<div>
+			<InputSelect @bind-Value="menu.Cuisine" class="form-control">
+				<option value="">-- Menu --</option>
+				@if (Menus != null)
+				{
+					foreach (var menu in Menus)
+					{
+						<option value="@menu.Id">@menu.Cuisine</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> menu.Cuisine)" />
+		</div>
+	</div>
+
+
+	<button type="submit" class="btn btn-success btn-block">
+		Create Menu
+	</button>
+</EditForm>
+
+@code {
+	Menu menu = new Menu();
+
+	private IList<Menu>? Menus;
+
+	protected async override Task OnInitializedAsync()
+	{
+		Menus = await _client.GetFromJsonAsync<List<Menu>>($"{Endpoints.MenusEndpoint}");
+
+	}
+
+	private async Task CreateMenu()
+	{
+		await _client.PostAsJsonAsync(Endpoints.MenusEndpoint, menu);
+		_navManager.NavigateTo("/menus/");
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+	{
+		var file = inputFileChangeEvent.File;
+
+		var buffer = new byte[file.Size];
+		await file.OpenReadStream().ReadAsync(buffer);
+
+		menu.CuisinePhoto = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+	}
+
+}

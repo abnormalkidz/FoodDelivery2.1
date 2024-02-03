@@ -1,0 +1,232 @@
+﻿@page "/orders/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New Order</h3>
+<hr />
+<br />
+
+<EditForm Model="@order" OnValidSubmit="CreateOrder">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label>Name: </label>
+		<div>
+			<InputSelect @bind-Value="order.CustomerId" class="form-control">
+				<option value="">-- Select Customer --</option>
+				@if (Customers != null)
+				{
+					foreach (var customer in Customers)
+					{
+						<option value="@customer.Id">@customer.CustName</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> order.CustomerId)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Food Item 1: </label>
+		<div>
+			<InputSelect @bind-Value="order.FoodOrderId1" class="form-control">
+				<option value="">-- FoodItem --</option>
+				@if (FoodOrders1 != null)
+				{
+					foreach (var foodorder in FoodOrders1)
+					{
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> order.FoodOrderId1)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Food Item 2: </label>
+		<div>
+			<InputSelect @bind-Value="order.FoodOrderId2" class="form-control">
+				<option value="">-- FoodItem --</option>
+				@if (FoodOrders2 != null)
+				{
+					foreach (var foodorder in FoodOrders2)
+					{
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> order.FoodOrderId2)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Food Item 3: </label>
+		<div>
+			<InputSelect @bind-Value="order.FoodOrderId3" class="form-control">
+				<option value="">-- FoodItem --</option>
+				@if (FoodOrders3 != null)
+				{
+					foreach (var foodorder in FoodOrders3)
+					{
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> order.FoodOrderId3)" />
+		</div>
+	</div>
+	@*	<div class="form-group">
+	<label>Driver: </label>
+	<div>
+	<InputSelect @bind-Value="order.DriverId" class="form-control">
+	<option value="">-- Driver --</option>
+	@if (Drivers != null)
+	{
+	foreach (var driver in Drivers)
+	{
+	<option value="@driver.Id">@driver.DriverName</option>
+	}
+	}
+	</InputSelect>
+	<ValidationMessage For="@(()=> order.DriverId)" />
+	</div>
+	</div>*@
+
+	<button type="submit" class="btn btn-success btn-block">
+		Create Order
+	</button>
+</EditForm>
+
+@code {
+	Order order = new Order();
+
+	private IList<Food>? Foods;
+	private IList<FoodOrder>? FoodOrders1;
+	private IList<FoodOrder>? FoodOrders2;
+	private IList<FoodOrder>? FoodOrders3;
+	private IList<Customer>? Customers;
+	private IList<Driver>? Drivers;
+
+	protected async override Task OnInitializedAsync()
+	{
+		Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+		FoodOrders1 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		FoodOrders2 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		FoodOrders3 = await _client.GetFromJsonAsync<List<FoodOrder>>($"{Endpoints.FoodOrdersEndpoint}");
+		Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
+		Drivers = await _client.GetFromJsonAsync<List<Driver>>($"{Endpoints.DriversEndpoint}");
+
+	}
+
+	private async Task CreateOrder()
+	{
+		if (order.FoodOrderId1 != null && order.FoodOrderId2 != null && order.FoodOrderId3 != null)
+		{
+			var availableDriver = Drivers.FirstOrDefault(driver => driver.OrderStatus == "Available");
+
+			if (availableDriver != null)
+			{
+				order.DriverId = availableDriver.Id;
+
+				// Update the driver status to "Assigned" or another appropriate status
+				availableDriver.OrderStatus = "Ongoing";
+
+				var selectedFoodOrder1 = FoodOrders1.FirstOrDefault(f => f.Id == order.FoodOrderId1);
+				var selectedFoodOrder2 = FoodOrders2.FirstOrDefault(f => f.Id == order.FoodOrderId2);
+				var selectedFoodOrder3 = FoodOrders3.FirstOrDefault(f => f.Id == order.FoodOrderId3);
+
+				// Calculate the total price by adding the prices of the three selected FoodOrders
+				order.TotalPrice = (selectedFoodOrder1?.TotalPrice ?? 0) +
+											(selectedFoodOrder2?.TotalPrice ?? 0) +
+											(selectedFoodOrder3?.TotalPrice ?? 0);
+
+				order.TotalCalories = (selectedFoodOrder1?.TotalCalories ?? 0) +
+							(selectedFoodOrder2?.TotalCalories ?? 0) +
+							(selectedFoodOrder3?.TotalCalories ?? 0);
+
+				order.TotalProtein = (selectedFoodOrder1?.TotalProtein ?? 0) +
+											(selectedFoodOrder2?.TotalProtein ?? 0) +
+											(selectedFoodOrder3?.TotalProtein ?? 0);
+
+				order.TotalFats = (selectedFoodOrder1?.TotalFats ?? 0) +
+											(selectedFoodOrder2?.TotalFats ?? 0) +
+											(selectedFoodOrder3?.TotalFats ?? 0);
+
+				var selectedCustomer = Customers.FirstOrDefault(f => f.Id == order.CustomerId);
+
+				@if ((order.TotalFats - 5 < selectedCustomer.TargetFats) && (selectedCustomer.TargetFats < order.TotalFats + 5))
+				{
+					order.FatsIndicator = "Close to Target";
+				}
+				else if ((order.TotalFats - 10 < selectedCustomer.TargetFats) && (selectedCustomer.TargetFats < order.TotalFats + 10))
+				{
+					order.FatsIndicator = "Far from Target";
+				}
+				else
+				{
+					order.FatsIndicator = "Very Far from Target";
+				}
+
+
+				@if ((order.TotalCalories - 100 < selectedCustomer.TargetCalories) && (selectedCustomer.TargetCalories < order.TotalCalories + 100))
+				{
+					order.CaloriesIndicator = "Close to Target";
+				}
+				else if ((order.TotalCalories - 300 < selectedCustomer.TargetCalories) && (selectedCustomer.TargetCalories < order.TotalCalories + 300))
+				{
+					order.CaloriesIndicator = "Far from Target";
+				}
+				else
+				{
+					order.CaloriesIndicator = "Very Far from Target";
+				}
+
+
+				@if ((order.TotalProtein - 2 < selectedCustomer.TargetProtein) && (selectedCustomer.TargetProtein < order.TotalProtein + 2))
+				{
+					order.ProteinIndicator = "Close to Target";
+				}
+				else if ((order.TotalProtein - 5 < selectedCustomer.TargetProtein) && (selectedCustomer.TargetProtein < order.TotalProtein + 5))
+				{
+					order.ProteinIndicator = "Far from Target";
+				}
+				else
+				{
+					order.ProteinIndicator = "Very Far from Target";
+				}
+
+
+	// Post the order to the server
+				// Post the order and update the driver status to the server
+				await Task.WhenAll(
+					_client.PostAsJsonAsync(Endpoints.OrdersEndpoint, order),
+					_client.PutAsJsonAsync($"{Endpoints.DriversEndpoint}/{availableDriver.Id}", availableDriver)
+				);
+
+				_navManager.NavigateTo("/orders/");
+			}
+			else
+			{
+				_navManager.NavigateTo("/orders/NoDriver");
+				Console.WriteLine("No available drivers found.");
+			}
+
+			// Find the selected FoodOrders based on their Ids
+			//var selectedFoodOrder1 = FoodOrders1.FirstOrDefault(f => f.Id == order.FoodOrderId1);
+			//var selectedFoodOrder2 = FoodOrders2.FirstOrDefault(f => f.Id == order.FoodOrderId2);
+			//var selectedFoodOrder3 = FoodOrders3.FirstOrDefault(f => f.Id == order.FoodOrderId3);
+
+			//// Calculate the total price by adding the prices of the three selected FoodOrders
+			//order.TotalPrice = (selectedFoodOrder1?.TotalPrice ?? 0) +
+			//							(selectedFoodOrder2?.TotalPrice ?? 0) +
+			//							(selectedFoodOrder3?.TotalPrice ?? 0);
+
+
+			//// Post the order to the server
+			//await _client.PostAsJsonAsync(Endpoints.OrdersEndpoint, order);
+			////await _client.GetFromJsonAsync<List<Order>>($"{Endpoints.OrdersEndpoint}?include=FoodOrder");
+
+			//_navManager.NavigateTo("/orders/");
+		}
+	}
+
+
+}

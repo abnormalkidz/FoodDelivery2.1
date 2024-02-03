@@ -1,0 +1,113 @@
+﻿@page "/orders/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+<h3 class="card-title">Orders</h3>
+<a href="/orders/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Order
+</a>
+<br />
+<br />
+@if (Orders == null)
+{
+	<div class="alert alert-info">Loading orders...</div>
+}
+else
+{
+	<table class="table table-responsive" id="ordersTable">
+		<thead>
+			<tr>
+				<th>Customer Name</th>
+				<th>Food Item 1 - Quantity</th>
+				<th>Food Item 2 - Quantity</th>
+				<th>Food Item 3 - Quantity</th>
+				<th>Total Calories</th>
+				<th>Calories Indicator</th>
+				<th>Total Protein (g)</th>
+				<th>Protein Indicator</th>
+				<th>Total Fats (g)</th>
+				<th>Fats Indicator</th>
+				<th>Total Price</th>
+				<th>Driver Name</th>
+				<th>Order Created</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var order in Orders)
+			{
+				<tr>
+					<td>@order.Customer.CustName</td>
+					<td>@order.FoodOrder1.Food.FoodItem - @order.FoodOrder1.Qty</td>
+					<td>@order.FoodOrder2.Food.FoodItem - @order.FoodOrder2.Qty</td>
+					<td>@order.FoodOrder3.Food.FoodItem - @order.FoodOrder3.Qty</td>
+					<td>@order.TotalCalories</td>
+					<td>@order.CaloriesIndicator</td>
+					<td>@order.TotalProtein</td>
+					<td>@order.ProteinIndicator</td>
+					<td>@(Convert.ToDouble(order.TotalFats).ToString("F2"))</td>
+					<td>@order.FatsIndicator</td>
+					<td>$@order.TotalPrice</td>
+					<td>@order.Driver.DriverName</td>
+					<td>@order.DateCreated.Date.ToString("dd MMMM yyyy")</td>
+
+					<td>
+						<a href="/orders/review/@order.Id" class="btn btn-primary">
+							<span class="oi oi-star" Review></span>
+						</a>
+						<a href="/orders/view/@order.Id" class="btn btn-primary">
+							<span class="oi oi-book"></span>
+						</a>
+						<a href="/orders/edit/@order.Id" class="btn btn-warning">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<button class="btn btn-danger" @onclick="@(()=>Delete(order.Id))">
+							<span class="oi oi-delete"></span>
+						</button>
+					</td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<Order>? Orders;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		Orders = await _client.GetFromJsonAsync<List<Order>>($"{Endpoints.OrdersEndpoint}");
+	}
+
+	async Task Delete(int orderID)
+	{
+		if (Orders != null)
+		{
+			var order = Orders.First(q => q.Id == orderID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {order.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.OrdersEndpoint}/{orderID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#ordersTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#ordersTable");
+	}
+
+}

@@ -1,0 +1,148 @@
+﻿@page "/reviews/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+
+<h3 class="card-title">Reviews</h3>
+
+<a href="/reviews/selectorderreview" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Order Review
+</a>
+<a href="/reviews/selectdriverreview" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Driver Review
+</a>
+
+<br />
+<br />
+@if (Reviews == null)
+{
+	<div class="alert alert-info">Loading reviews...</div>
+}
+else
+{
+	<h3>Order Reviews</h3>
+	<table class="table table-responsive" id="reviewsTable">
+		<thead>
+			<tr>
+				<th>Name: </th>
+				<th>Ratings: </th>
+				<th>Review: </th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var review in Reviews)
+			{
+				@if (@review.Driver?.DriverName == null)
+				{
+					<tr>
+						<td>@review.Order?.FoodOrder1?.Food?.FoodItem</td>
+						<td>@review.Rating</td>
+						<td>@review.Remarks</td>
+						<td>
+							<a href="/reviews/view/@review.Id" class="btn btn-primary">
+								<span class="oi oi-book"></span>
+							</a>
+							<a href="/reviews/edit/@review.Id" class="btn btn-warning">
+								<span class="oi oi-pencil"></span>
+							</a>
+							<button class="btn btn-danger" @onclick="@(()=>Delete(review.Id))">
+								<span class="oi oi-delete"></span>
+							</button>
+						</td>
+					</tr>
+				}
+				else
+				{
+					continue;	
+				}
+			}
+
+		</tbody>
+	</table>
+
+
+	<h3>Driver Reviews</h3>
+	<table class="table table-responsive">
+		<thead>
+			<tr>
+				<th>Name: </th>
+				<th>Ratings: </th>
+				<th>Review: </th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var review in Reviews)
+			{
+				@if (@review.Driver?.DriverName != null)
+				{
+					<tr>
+						<td>@review.Driver?.DriverName</td>
+						<td>@review.Rating</td>
+						<td>@review.Remarks</td>
+						<td>
+							<a href="/reviews/view/@review.Id" class="btn btn-primary">
+								<span class="oi oi-book"></span>
+							</a>
+							<a href="/reviews/edit/@review.Id" class="btn btn-warning">
+								<span class="oi oi-pencil"></span>
+							</a>
+							<button class="btn btn-danger" @onclick="@(()=>Delete(review.Id))">
+								<span class="oi oi-delete"></span>
+							</button>
+						</td>
+					</tr>
+				}
+				else
+				{
+					continue;
+				}
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<Review>? Reviews;
+	//private List<Driver>? Drivers;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+		//Drivers = await _client.GetFromJsonAsync<List<Driver>>($"{Endpoints.DriversEndpoint}");
+
+	}
+
+	async Task Delete(int reviewID)
+	{
+		if (Reviews != null)
+		{
+			var review = Reviews.First(q => q.Id == reviewID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#reviewsTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
+	}
+
+}

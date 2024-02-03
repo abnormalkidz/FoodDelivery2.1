@@ -1,0 +1,75 @@
+﻿@inject HttpClient _client
+@using FoodDelivery2.Client.Components
+
+<h3>FormComponent</h3>
+
+<EditForm Model="@menu" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+
+        <div class="form-group">
+
+            <label> Photo:</label>
+
+            <div>
+
+                <img src="@menu.CuisinePhoto" style="width: 200px; height: 200px;"> <br /> <br />
+
+                <InputFile OnChange="@OnInputFileChanged"></InputFile>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Cuisine: </label>
+            <div>
+                <InputSelect @bind-Value="menu.Cuisine" class="form-control">
+                    <option value="">-- Menu --</option>
+                    @if (Menus != null)
+                    {
+                        foreach (var menu in Menus)
+                        {
+                            <option value="@menu.Id">@menu.Cuisine</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(()=> menu.Cuisine)" />
+            </div>
+        </div>
+
+    </fieldset>
+
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+
+    }
+    <BackToList Target="menus" />
+
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Menu? menu { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Menu>? Menus;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Menus = await _client.GetFromJsonAsync<List<Menu>>($"{Endpoints.MenusEndpoint}");
+    }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+    {
+        var file = inputFileChangeEvent.File;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+        menu.CuisinePhoto = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+    }
+}

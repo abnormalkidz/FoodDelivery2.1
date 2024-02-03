@@ -1,0 +1,89 @@
+﻿@page "/drivers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New Driver</h3>
+<hr />
+<br />
+
+<EditForm Model="@driver" OnValidSubmit="CreateDriver">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label> Photo:</label>
+		<div>
+			<img src="@driver.DriverPhoto" style="width: 250px; height: 250px;"> <br /> <br />
+			<InputFile OnChange="@OnInputFileChanged"></InputFile>
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Name: </label>
+		<div>
+			<InputText @bind-Value="driver.DriverName" class="form-control" />
+			<ValidationMessage For="@(()=> driver.DriverName)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Mode Of Transport: </label>
+		<div>
+			<InputSelect @bind-Value="driver.ModeOfTransport" class="form-control">
+				<option value="">-- Select Mode Of Transport --</option>
+				<option value="Car">Car</option>
+				<option value="Bicycle">Bicycle</option>
+				<option value="Motorcycle">Motorcycle</option>
+				<option value="Foot">Foot</option>
+			</InputSelect>
+			<ValidationMessage For="@(()=> driver.ModeOfTransport)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Email: </label>
+		<div>
+			<InputText @bind-Value="driver.DriverEmail" class="form-control" />
+			<ValidationMessage For="@(()=> driver.DriverEmail)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Phone Number: </label>
+		<div>
+			<InputText @bind-Value="driver.DriverPhoneNo" class="form-control" />
+			<ValidationMessage For="@(()=> driver.DriverPhoneNo)" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Order Status: </label>
+		<div>
+			<InputSelect @bind-Value="driver.OrderStatus" class="form-control">
+					<option value="">-- Select Order Status --</option>
+					<option value="Available">Available</option>
+					<option value="Ongoing">Ongoing</option>
+					<option value="Delivered">Delivered</option>
+				</InputSelect>
+			<ValidationMessage For="@(()=> driver.OrderStatus)" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">
+		Create Driver
+	</button>
+</EditForm>
+
+@code {
+	Driver driver = new Driver();
+
+	private async Task CreateDriver()
+	{
+		await _client.PostAsJsonAsync(Endpoints.DriversEndpoint, driver);
+		_navManager.NavigateTo("/drivers/");
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+	{
+		var file = inputFileChangeEvent.File;
+
+		var buffer = new byte[file.Size];
+		await file.OpenReadStream().ReadAsync(buffer);
+
+		driver.DriverPhoto = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+	}
+
+}

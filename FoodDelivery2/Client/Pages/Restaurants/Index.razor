@@ -1,0 +1,93 @@
+﻿@page "/restaurants/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable 
+
+
+<h3 class="card-title">Restaurants</h3>
+<a href="/restaurants/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Restaurant
+</a>
+<br />
+<br />
+@if (Restaurants == null)
+{
+    <div class="alert alert-info">Loading restaurants...</div>
+}
+else
+{
+    <table class="table table-responsive" id="restaurantsTable">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Restaurant</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var restaurant in Restaurants)
+            {
+                <tr>
+                    <td><img src="@restaurant.RestaurantPhoto" alt="" style="width: 200px; height: 150px;" /></td>
+                    <td>@restaurant.RestoName</td>
+                    <td>@restaurant.Location</td>
+
+                    <td>
+                        <a href="/restaurants/view/@restaurant.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/restaurants/edit/@restaurant.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(restaurant.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+
+@code {
+    private List<Restaurant>? Restaurants;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Restaurants = await _client.GetFromJsonAsync<List<Restaurant>>($"{Endpoints.RestaurantsEndpoint}");
+    }
+
+    async Task Delete(int restaurantID)
+    {
+        if (Restaurants != null)
+        {
+            var restaurant = Restaurants.First(q => q.Id == restaurantID);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {restaurant.Id}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.RestaurantsEndpoint}/{restaurantID}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#restaurantsTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#restaurantsTable");
+    }
+
+}

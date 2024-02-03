@@ -1,0 +1,19 @@
+﻿@page "/faqs/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">View FAQ</h3>
+
+<FormComponent faq="faq" Disabled="true" />
+
+@code {
+
+    [Parameter] public int id { get; set; }
+    FAQ? faq = new FAQ();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        faq = await
+        _client.GetFromJsonAsync<FAQ>($"{Endpoints.FAQsEndpoint}/{id}");
+    }
+}

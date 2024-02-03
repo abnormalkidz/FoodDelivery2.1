@@ -1,0 +1,92 @@
+﻿@page "/faqs/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+<h3 class="card-title">FAQs</h3>
+<a href="/faqs/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New FAQ
+</a>
+<br />
+<br />
+@if (FAQs == null)
+{
+	<div class="alert alert-info">Loading faqs...</div>
+}
+else
+{
+	<table class="table table-responsive" id="faqsTable">
+		<thead>
+			<tr>
+				<th>Questions</th>
+				<th>Answers</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var faq in FAQs)
+			{
+				<tr>
+					<td>@faq.Qns</td>
+					<td>@faq.Ans</td>
+
+					<td>
+						<a href="/faqs/view/@faq.Id" class="btn btn-primary">
+							<span class="oi oi-book"></span>
+						</a>
+						<a href="/faqs/edit/@faq.Id" class="btn btn-warning">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<button class="btn btn-danger" @onclick="@(()=>Delete(faq.Id))">
+							<span class="oi oi-delete"></span>
+						</button>
+					</td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+<h3>Contact Us</h3>
+<p>If you have any further questions or need assistance, please feel free to contact us at:</p>
+<a href="mailto:2200586B@student.tp.edu.sg">Yeokidz's Email</a>
+
+@code {
+	private List<FAQ>? FAQs;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		FAQs = await _client.GetFromJsonAsync<List<FAQ>>($"{Endpoints.FAQsEndpoint}");
+	}
+
+	async Task Delete(int faqID)
+	{
+		if (FAQs != null)
+		{
+			var faq = FAQs.First(q => q.Id == faqID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {faq.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.FAQsEndpoint}/{faqID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#faqsTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#faqsTable");
+	}
+
+}

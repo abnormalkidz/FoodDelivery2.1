@@ -1,0 +1,86 @@
+﻿@page "/foodorders/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create New FoodOrder</h3>
+<hr />
+<br />
+
+<EditForm Model="@foodorder" OnValidSubmit="CreateFoodOrder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Food Item: </label>
+        <div>
+            <InputSelect @bind-Value="foodorder.FoodId" class="form-control">
+                <option value="">-- Select food item --</option>
+                @if (Foods != null)
+                {
+                    foreach (var food in Foods)
+                    {
+                        @if (@food.Id == 1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            <option value="@food.Id">@food.FoodItem</option>
+                        }
+                        
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(()=> foodorder.FoodId)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Quantity: </label>
+        <div>
+            <InputNumber @bind-Value="foodorder.Qty" class="form-control" />
+            <ValidationMessage For="@(()=> foodorder.Qty)" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        Create FoodOrder
+    </button>
+</EditForm>
+
+@code {
+    FoodOrder foodorder = new FoodOrder();
+    private IList<Food> Foods;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+    }
+
+    private async Task CreateFoodOrder()
+    {
+        var selectedFood = Foods.FirstOrDefault(f => f.Id == foodorder.FoodId);
+
+        if (selectedFood != null)
+        {
+            foodorder.FoodPrice = selectedFood.Price;
+            foodorder.FoodProtein = selectedFood.Protein;
+            foodorder.FoodCalories = selectedFood.Calories;
+            foodorder.FoodFats = selectedFood.Fats;
+
+            foodorder.UpdateTotalPrice();
+            foodorder.UpdateTotalCalories();
+            foodorder.UpdateTotalProtein();
+            foodorder.UpdateTotalFats();
+
+            Console.WriteLine($"FoodPrice: {foodorder.FoodPrice}, Qty: {foodorder.Qty}, TotalPrice: {foodorder.TotalPrice}, TotalCalories: {foodorder.TotalCalories},TotalProtein: {foodorder.TotalProtein},TotalFats: {foodorder.TotalFats}");
+
+            // Send the order to the server
+            await _client.PostAsJsonAsync(Endpoints.FoodOrdersEndpoint, foodorder);
+
+            // Navigate to the food orders page
+            _navManager.NavigateTo("/foodorders/");
+        }
+        else
+        {
+            Console.WriteLine("Selected food item not found.");
+        }
+    }
+}

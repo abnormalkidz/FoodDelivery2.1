@@ -1,0 +1,91 @@
+﻿@page "/menus/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+
+<h3 class="card-title">Menus</h3>
+<a href="/menus/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Menu
+</a>
+<br />
+<br />
+@if (Menus == null)
+{
+	<div class="alert alert-info">Loading menus...</div>
+}
+else
+{
+	<table class="table table-responsive" id="menusTable">
+		<thead>
+			<tr>
+				<th>Photo</th>
+				<th>Cuisine</th>
+				<th>Links</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var menu in Menus)
+			{
+				<tr>
+					<td><img src="@menu.CuisinePhoto" alt="" style="width: 200px; height: 150px;" /></td>
+					<td>@menu.Cuisine</td>
+					<td><a href="https://localhost:44310/restaurants" target="/restaurants/">Link to restaurants we like!</a></td>
+
+					<td>
+						<a href="/menus/view/@menu.Id" class="btn btn-primary">
+							<span class="oi oi-book"></span>
+						</a>
+						<a href="/menus/edit/@menu.Id" class="btn btn-warning">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<button class="btn btn-danger" @onclick="@(()=>Delete(menu.Id))">
+							<span class="oi oi-delete"></span>
+						</button>
+					</td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<Menu>? Menus;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		Menus = await _client.GetFromJsonAsync<List<Menu>>($"{Endpoints.MenusEndpoint}");
+	}
+
+	async Task Delete(int menuID)
+	{
+		if (Menus != null)
+		{
+			var menu = Menus.First(q => q.Id == menuID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {menu.Id}?");
+			if (confirm)
+			{ 
+				await _client.DeleteAsync($"{Endpoints.MenusEndpoint}/{menuID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#menusTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#menusTable");
+	}
+}

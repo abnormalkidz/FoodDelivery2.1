@@ -1,0 +1,108 @@
+﻿@page "/foods/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+
+<h3 class="card-title">Foods</h3>
+<a href="/foods/create" class="btn btn-secondary">
+	<span class="oi oi-plus"></span>
+	Create New Food
+</a>
+<br />
+<br />
+@if (Foods == null)
+{
+	<div class="alert alert-info">Loading foods...</div>
+}
+else
+{
+	<table class="table table-responsive" id="foodsTable">
+		<thead>
+			<tr>
+				<th>FoodItem</th>
+				<th>Size</th>
+				<th>Price</th>
+				<th>Halal</th>
+				<th>Calories</th>
+				<th>Protein</th>
+				<th>Fats</th>
+				<th>Allergies</th>
+				<th>Remarks</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var food in Foods)
+			{
+				@if (@food.Id == 1)
+				{
+					continue;
+				}
+				else
+				{
+					<tr>
+						<td>@food.FoodItem</td>
+						<td>@food.Size</td>
+						<td>@food.Price</td>
+						<td>@food.Halal</td>
+						<td>@food.Calories</td>
+						<td>@food.Protein</td>
+						<td>@food.Fats</td>
+						<td>@food.Allergies</td>
+						<td>@food.Remarks</td>
+						<td>
+							<a href="/foods/view/@food.Id" class="btn btn-primary">
+								<span class="oi oi-book"></span>
+							</a>
+							<a href="/foods/edit/@food.Id" class="btn btn-warning">
+								<span class="oi oi-pencil"></span>
+							</a>
+							<button class="btn btn-danger" @onclick="@(()=>Delete(food.Id))">
+								<span class="oi oi-delete"></span>
+							</button>
+						</td>
+					</tr>
+				}
+
+
+			}
+		</tbody>
+	</table>
+}
+
+<br />
+
+@code {
+	private List<Food>? Foods;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_interceptor.MonitorEvent();
+		Foods = await _client.GetFromJsonAsync<List<Food>>($"{Endpoints.FoodsEndpoint}");
+	}
+
+	async Task Delete(int foodID)
+	{
+		if (Foods != null)
+		{
+			var food = Foods.First(q => q.Id == foodID);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {food.Id}?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.FoodsEndpoint}/{foodID}");
+				await OnInitializedAsync();
+			}
+		}
+	}
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		await js.InvokeVoidAsync("AddDataTable", "#foodsTable");
+	}
+
+	public void Dispose()
+	{
+		js.InvokeVoidAsync("DataTablesDispose", "#foodsTable");
+	}
+}
