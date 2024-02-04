@@ -1,15 +1,12 @@
 ﻿@inject HttpClient _client
 @using FoodDelivery2.Client.Components
 
-<h3>FormComponent</h3>
-
 <EditForm Model="@restaurant" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <fieldset disabled="@Disabled">
 
-        div class="form-group">
     <label> Photo:</label>
     <div>
             <img src="@restaurant.RestoName" style="width: 250px; height: 250px;"> <br /> <br />
@@ -40,7 +37,7 @@
         </div>
         
 
-        <BackToList Target="restaurants"/>
+        
 
     </fieldset>
 
@@ -52,7 +49,7 @@
         </button>
 
     }
-
+    <BackToList Target="restaurants" />
 </EditForm>
 
 @code {

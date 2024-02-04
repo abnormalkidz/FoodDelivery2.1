@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FoodDelivery2.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class gfd : Migration
+    public partial class pls : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -83,7 +83,7 @@ namespace FoodDelivery2.Server.Migrations
                     ModeOfTransport = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DriverEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DriverPhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DriverPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -560,16 +560,16 @@ namespace FoodDelivery2.Server.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "26a9db42-0087-4fe9-8f51-0d42ed0ab8ce", "admin@localhost.com", false, "Admin", "User", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEEH7qpKS8Y9EfKDdkGdV3o3rSyjjNf8WuAx7/HxupIKnB8HSP8tjKRN0Hs/13qn5FA==", null, false, "98a60f77-0c9d-43c6-8874-94aa977f2fa3", false, "admin@localhost.com" });
+                values: new object[] { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "146bd72a-bef5-4dc4-9dd8-6acb90439741", "admin@localhost.com", false, "Admin", "User", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEGEX7uttrjGj/g6Gf0OALfVGs8K22nUp+KWMBgFKDNsfV6ORfm2VSAaaZ+0u49iPgQ==", null, false, "bb1a79aa-aefe-4450-a859-221dc180be9a", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "Foods",
                 columns: new[] { "Id", "Allergies", "Calories", "CreatedBy", "DateCreated", "DateUpdated", "Fats", "FoodItem", "Halal", "Price", "Protein", "Remarks", "Size", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "Nil", 0, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4095), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4096), 0.0, "No Food Item", true, 0.0, 0.0, "Nil", "Nil", "System" },
-                    { 2, "Nil", 5000, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4101), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4102), 0.55000000000000004, "Burger", true, 3.5, 0.5, "Nil", "Small", "System" },
-                    { 3, "Peanuts", 3000, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4109), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4109), 0.14999999999999999, "Mala", true, 3.5, 0.29999999999999999, "Nil", "Large", "System" }
+                    { 1, "Nil", 0, "System", new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(45), new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(47), 0.0, "No Food Item", true, 0.0, 0.0, "Nil", "Nil", "System" },
+                    { 2, "Nil", 5000, "System", new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(103), new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(104), 0.55000000000000004, "Burger", true, 3.5, 0.5, "Nil", "Small", "System" },
+                    { 3, "Peanuts", 3000, "System", new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(107), new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(108), 0.14999999999999999, "Mala", true, 3.5, 0.29999999999999999, "Nil", "Large", "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -577,30 +577,30 @@ namespace FoodDelivery2.Server.Migrations
                 columns: new[] { "Id", "CreatedBy", "Cuisine", "CuisinePhoto", "DateCreated", "DateUpdated", "FoodId", "RestaurantId", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", "Western", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5784), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5786), null, null, "System" },
-                    { 2, "System", "Korean", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5790), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5791), null, null, "System" },
-                    { 3, "System", "Malay", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5794), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5794), null, null, "System" },
-                    { 4, "System", "Indonesian", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5797), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5798), null, null, "System" },
-                    { 5, "System", "Malay", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5800), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5801), null, null, "System" },
-                    { 6, "System", "Chinese", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5803), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5804), null, null, "System" },
-                    { 7, "System", "Malay", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5806), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5807), null, null, "System" },
-                    { 8, "System", "Japanese", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5809), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5810), null, null, "System" },
-                    { 9, "System", "Italian", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5812), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5813), null, null, "System" },
-                    { 10, "System", "Thai", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5815), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5816), null, null, "System" }
+                    { 1, "System", "Western", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4944), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4945), null, null, "System" },
+                    { 2, "System", "Korean", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4947), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4948), null, null, "System" },
+                    { 3, "System", "Malay", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4949), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4950), null, null, "System" },
+                    { 4, "System", "Indonesian", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4951), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4951), null, null, "System" },
+                    { 5, "System", "Malay", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4953), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4953), null, null, "System" },
+                    { 6, "System", "Chinese", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4954), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4955), null, null, "System" },
+                    { 7, "System", "Malay", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4956), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4956), null, null, "System" },
+                    { 8, "System", "Japanese", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4957), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4958), null, null, "System" },
+                    { 9, "System", "Italian", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4959), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4960), null, null, "System" },
+                    { 10, "System", "Thai", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4961), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4961), null, null, "System" }
                 });
 
             migrationBuilder.InsertData(
                 table: "PromoCodes",
                 columns: new[] { "Id", "Amount", "CreatedBy", "CustomerId", "DateCreated", "DateUpdated", "PCExpiryDate", "PromoName", "UpdatedBy" },
-                values: new object[] { 1, 0.0, "System", null, new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5243), new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5265), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "NIL", "System" });
+                values: new object[] { 1, 0.0, "System", null, new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4649), new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4667), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "NIL", "System" });
 
             migrationBuilder.InsertData(
                 table: "Restaurants",
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Location", "RestaurantPhoto", "RestoName", "ReviewId", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3628), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3640), "Tampines Mall", null, "DTF", null, "System" },
-                    { 2, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3643), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3644), "Bedok Corner", null, "Mala Wok", null, "System" }
+                    { 1, "System", new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9564), new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9580), "Tampines Mall", null, "DTF", null, "System" },
+                    { 2, "System", new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9583), new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9584), "Bedok Corner", null, "Mala Wok", null, "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -611,7 +611,7 @@ namespace FoodDelivery2.Server.Migrations
             migrationBuilder.InsertData(
                 table: "FoodOrders",
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "FoodCalories", "FoodFats", "FoodId", "FoodPrice", "FoodProtein", "Qty", "Remarks", "TotalCalories", "TotalFats", "TotalPrice", "TotalProtein", "UpdatedBy" },
-                values: new object[] { 1, "System", new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4379), new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4380), null, null, 1, null, null, 0, null, null, null, null, null, "System" });
+                values: new object[] { 1, "System", new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(406), new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(408), null, null, 1, null, null, 0, null, null, null, null, null, "System" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

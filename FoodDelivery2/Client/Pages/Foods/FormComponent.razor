@@ -71,7 +71,7 @@
 				<ValidationMessage For="@(()=> food.Remarks)" />
 			</div>
 		</div>
-		<BackToList Target="foods" />
+		
     </fieldset>
 
 	@if (!Disabled)
@@ -80,6 +80,7 @@
 			@ButtonText
 		</button>
 	}
+	<BackToList Target="foods" />
 </EditForm>
 
 @code {

@@ -24,7 +24,6 @@ namespace FoodDelivery2.Shared.Domain
         [DataType(DataType.PhoneNumber)]
         [RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact number inputed is not a valid phone number.")]
         public string? DriverPhoneNo { get; set; }
-        [Required]
         public string? OrderStatus { get; set; }
 
         public string? DriverPhoto { get; set; }

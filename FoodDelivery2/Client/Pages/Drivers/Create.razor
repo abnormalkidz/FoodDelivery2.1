@@ -50,18 +50,16 @@
 			<ValidationMessage For="@(()=> driver.DriverPhoneNo)" />
 		</div>
 	</div>
-	<div class="form-group">
+@* 	<div class="form-group">
 		<label>Order Status: </label>
 		<div>
 			<InputSelect @bind-Value="driver.OrderStatus" class="form-control">
 					<option value="">-- Select Order Status --</option>
 					<option value="Available">Available</option>
-					<option value="Ongoing">Ongoing</option>
-					<option value="Delivered">Delivered</option>
 				</InputSelect>
 			<ValidationMessage For="@(()=> driver.OrderStatus)" />
 		</div>
-	</div>
+	</div> *@
 	<button type="submit" class="btn btn-success btn-block">
 		Create Driver
 	</button>
@@ -72,6 +70,7 @@
 
 	private async Task CreateDriver()
 	{
+		driver.OrderStatus = "Available";
 		await _client.PostAsJsonAsync(Endpoints.DriversEndpoint, driver);
 		_navManager.NavigateTo("/drivers/");
 	}

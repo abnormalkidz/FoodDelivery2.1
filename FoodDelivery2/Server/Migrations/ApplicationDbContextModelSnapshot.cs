@@ -238,7 +238,7 @@ namespace FoodDelivery2.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "26a9db42-0087-4fe9-8f51-0d42ed0ab8ce",
+                            ConcurrencyStamp = "146bd72a-bef5-4dc4-9dd8-6acb90439741",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -246,9 +246,9 @@ namespace FoodDelivery2.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEH7qpKS8Y9EfKDdkGdV3o3rSyjjNf8WuAx7/HxupIKnB8HSP8tjKRN0Hs/13qn5FA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGEX7uttrjGj/g6Gf0OALfVGs8K22nUp+KWMBgFKDNsfV6ORfm2VSAaaZ+0u49iPgQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "98a60f77-0c9d-43c6-8874-94aa977f2fa3",
+                            SecurityStamp = "bb1a79aa-aefe-4450-a859-221dc180be9a",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -356,7 +356,6 @@ namespace FoodDelivery2.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderStatus")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
@@ -465,8 +464,8 @@ namespace FoodDelivery2.Server.Migrations
                             Allergies = "Nil",
                             Calories = 0,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4095),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4096),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(45),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(47),
                             Fats = 0.0,
                             FoodItem = "No Food Item",
                             Halal = true,
@@ -482,8 +481,8 @@ namespace FoodDelivery2.Server.Migrations
                             Allergies = "Nil",
                             Calories = 5000,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4101),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4102),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(103),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(104),
                             Fats = 0.55000000000000004,
                             FoodItem = "Burger",
                             Halal = true,
@@ -499,8 +498,8 @@ namespace FoodDelivery2.Server.Migrations
                             Allergies = "Peanuts",
                             Calories = 3000,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4109),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4109),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(107),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(108),
                             Fats = 0.14999999999999999,
                             FoodItem = "Mala",
                             Halal = true,
@@ -577,8 +576,8 @@ namespace FoodDelivery2.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4379),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(4380),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(406),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 953, DateTimeKind.Local).AddTicks(408),
                             FoodId = 1,
                             Qty = 0,
                             UpdatedBy = "System"
@@ -632,8 +631,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 1,
                             CreatedBy = "System",
                             Cuisine = "Western",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5784),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5786),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4944),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4945),
                             UpdatedBy = "System"
                         },
                         new
@@ -641,8 +640,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 2,
                             CreatedBy = "System",
                             Cuisine = "Korean",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5790),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5791),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4947),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4948),
                             UpdatedBy = "System"
                         },
                         new
@@ -650,8 +649,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 3,
                             CreatedBy = "System",
                             Cuisine = "Malay",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5794),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5794),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4949),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4950),
                             UpdatedBy = "System"
                         },
                         new
@@ -659,8 +658,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 4,
                             CreatedBy = "System",
                             Cuisine = "Indonesian",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5797),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5798),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4951),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4951),
                             UpdatedBy = "System"
                         },
                         new
@@ -668,8 +667,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 5,
                             CreatedBy = "System",
                             Cuisine = "Malay",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5800),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5801),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4953),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4953),
                             UpdatedBy = "System"
                         },
                         new
@@ -677,8 +676,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 6,
                             CreatedBy = "System",
                             Cuisine = "Chinese",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5803),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5804),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4954),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4955),
                             UpdatedBy = "System"
                         },
                         new
@@ -686,8 +685,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 7,
                             CreatedBy = "System",
                             Cuisine = "Malay",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5806),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5807),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4956),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4956),
                             UpdatedBy = "System"
                         },
                         new
@@ -695,8 +694,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 8,
                             CreatedBy = "System",
                             Cuisine = "Japanese",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5809),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5810),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4957),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4958),
                             UpdatedBy = "System"
                         },
                         new
@@ -704,8 +703,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 9,
                             CreatedBy = "System",
                             Cuisine = "Italian",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5812),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5813),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4959),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4960),
                             UpdatedBy = "System"
                         },
                         new
@@ -713,8 +712,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 10,
                             CreatedBy = "System",
                             Cuisine = "Thai",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5815),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5816),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4961),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4961),
                             UpdatedBy = "System"
                         });
                 });
@@ -903,8 +902,8 @@ namespace FoodDelivery2.Server.Migrations
                             Id = 1,
                             Amount = 0.0,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5243),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 412, DateTimeKind.Local).AddTicks(5265),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4649),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 4, 28, DateTimeKind.Local).AddTicks(4667),
                             PCExpiryDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PromoName = "NIL",
                             UpdatedBy = "System"
@@ -957,8 +956,8 @@ namespace FoodDelivery2.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3628),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3640),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9564),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9580),
                             Location = "Tampines Mall",
                             RestoName = "DTF",
                             UpdatedBy = "System"
@@ -967,8 +966,8 @@ namespace FoodDelivery2.Server.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3643),
-                            DateUpdated = new DateTime(2024, 2, 4, 0, 3, 13, 316, DateTimeKind.Local).AddTicks(3644),
+                            DateCreated = new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9583),
+                            DateUpdated = new DateTime(2024, 2, 4, 20, 22, 3, 952, DateTimeKind.Local).AddTicks(9584),
                             Location = "Bedok Corner",
                             RestoName = "Mala Wok",
                             UpdatedBy = "System"

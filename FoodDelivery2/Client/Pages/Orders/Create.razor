@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label>Food Item 1: </label>
+		<label>Food Item 1 - Quantity: </label>
 		<div>
 			<InputSelect @bind-Value="order.FoodOrderId1" class="form-control">
 				<option value="">-- FoodItem --</option>
@@ -34,7 +34,7 @@
 				{
 					foreach (var foodorder in FoodOrders1)
 					{
-						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem - @foodorder.Qty</option>
 					}
 				}
 			</InputSelect>
@@ -42,7 +42,7 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label>Food Item 2: </label>
+		<label>Food Item 2 - Quantity: </label>
 		<div>
 			<InputSelect @bind-Value="order.FoodOrderId2" class="form-control">
 				<option value="">-- FoodItem --</option>
@@ -50,7 +50,7 @@
 				{
 					foreach (var foodorder in FoodOrders2)
 					{
-						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem - @foodorder.Qty</option>
 					}
 				}
 			</InputSelect>
@@ -58,7 +58,7 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label>Food Item 3: </label>
+		<label>Food Item 3 - Quantity: </label>
 		<div>
 			<InputSelect @bind-Value="order.FoodOrderId3" class="form-control">
 				<option value="">-- FoodItem --</option>
@@ -66,7 +66,7 @@
 				{
 					foreach (var foodorder in FoodOrders3)
 					{
-						<option value="@foodorder.Id">@foodorder.Food?.FoodItem</option>
+						<option value="@foodorder.Id">@foodorder.Food?.FoodItem - @foodorder.Qty</option>
 					}
 				}
 			</InputSelect>
